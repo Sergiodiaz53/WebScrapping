@@ -50,10 +50,13 @@ for x in range(1647550, 5383, -1):
 		soup = BeautifulSoup(data, 'html5lib')
 
 		#Parse table information into Python dictionary
-		retrievedDict = {
-					    label.select("td > strong")[0].get_text(strip=True): label.select("td")[1].get_text(strip=True)
-					    for label in soup.select("tr")
-					}
+		retrievedDict = dict()
+		for label in soup.select("tr"):
+			if(label.select("td > strong")[0]):
+				if(label.select("td")[1]):
+					retrievedDict[label.select("td > strong")[0].get_text(strip=True)] = label.select("td")[1].get_text(strip=True)
+				else:
+					retrievedDict[label.select("td > strong")[0].get_text(strip=True)] = "NULL"
 
 		retrievedDict["submit_script"] = submit_script
 
@@ -67,8 +70,10 @@ for x in range(1647550, 5383, -1):
 			w.writerow(retrievedDict.values())
 	except(IndexError):
 		print("ERROR: Index out of bounds exception (Missing job). Skipping.")
-	except:
-		print("ERROR: There was a problem retriving a job. Skipping")
+	except Exception as e:
+		print("ERROR: There was a problem retriving a job.")
+		print("Unexpected error: ", e)
+		print("Skipping")
 
 	#Wait random secs for next job
 	sleep(round(random.uniform(0.6, 1.2), 2))
