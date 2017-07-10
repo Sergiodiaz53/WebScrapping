@@ -75,6 +75,10 @@ for x in range(1647550, 5383, -1):
 		print("Unexpected error: ", e)
 		print("Skipping")
 
+	#Free memory
+	del retrievedDict
+	gc.collect()
+
 	#Wait random secs for next job
 	sleep(round(random.uniform(0.6, 1.2), 2))
 	step += 1
